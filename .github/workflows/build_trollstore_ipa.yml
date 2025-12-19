@@ -1,0 +1,110 @@
+name: Build TrollStore IPA 
+  
+on
+  workflow_dispatch: # 手动触发
+  push:
+    branches: [ "main" ]
+  pull_request
+    branches: [ "main" ]
+  
+jobs:
+  build:
+    runs-on: macos-26
+    env:
+      DEVICE: "iPhone 17"
+  
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1 
+        with:
+          fetch-depth: 0
+  
+      - name: Resolve package dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -workspace Thunderbird.xcworkspace \
+            -scheme Thunderbird
+  
+      - name: Build and analyze
+        run: |
+          xcodebuild clean build analyze \
+            -workspace Thunderbird.xcworkspace \
+            -scheme Thunderbird \
+            -sdk iphonesimulator \
+            -destination "platform=iOS Simulator,name=${DEVICE}"
+  
+      - name: List available simulators
+        run: xcrun simctl list devices
+  
+      - name: Boot simulator
+        uses: nick-invision/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 15
+          command: |
+            set -x
+            echo "Booting ${DEVICE} simulator..."
+            xcrun simctl shutdown "${DEVICE}" || true
+            xcrun simctl boot "${DEVICE}" || tru
+            xcrun simctl bootstatus "${DEVICE}" -b
+            echo "Simulator booted and ready." 
+  
+      - name: Run tests
+        uses: nick-invision/retry@v3
+        with:
+          timeout_minutes: 15
+          max_attempts: 3
+          retry_wait_seconds: 
+          command: |
+            echo "Running tests in ${DEVICE} simulator..."
+            xcodebuild test \
+              -workspace Thunderbird.xcworkspace \
+              -scheme ThunderbirdTests \
+              -sdk iphonesimulator \
+              -destination "platform=iOS Simulator,name=${DEVICE}
+  
+      - name: Archive (Release, unsigned)
+        run: |
+          xcodebuild clean archive \
+            -workspace Thunderbird.xcworkspace \
+            -scheme hunderbird \
+            -sdk iphoneos \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/Thunderbird.xcarchive \
+            CODE_SIGNING_ALLOWED=NO
+  
+      - name: Export unsigned IPA
+        run: |
+          # 创建导出选项plist
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">  
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>development</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>stripSwiftSymbols</key
+              <true/>
+              <key>thinning</key
+              <string>&lt;none&gt;</string>
+          </dict>
+          </plist>
+          EOF
+            
+          # 导出IPA
+          xcodebuild -exportArchive \
+            -archivePath build/Thunderbird.xcarchive \
+            -exportPath build/ \
+            -exportOptionsPlist ExportOptions.plist \
+            CODE_SIGNING_ALLOWED=NO
+  
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: Thundebird-TrollStore-${{ github.run_number }
+          path: build/Thunderbird.ipa  
+          retention-days: 30
