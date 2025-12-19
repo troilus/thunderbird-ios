@@ -1,10 +1,10 @@
 name: Build TrollStore IPA 
-  
-on
-  workflow_dispatch: # 手动触发
-  push:
-    branches: [ "main" ]
-  pull_request
+
+on:  
+  workflow_dispatch:  # 手动触发  
+  push:  
+    branches: [ "main" ]  
+  pull_request:  
     branches: [ "main" ]
   
 jobs:
