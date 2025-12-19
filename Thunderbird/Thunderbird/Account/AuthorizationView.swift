@@ -37,7 +37,7 @@ struct AuthorizationView: View {
                 }
         case .oAuth2:
             OAuthButton(username, token: $token, error: $error)
-                .onChange(of: token, initial: true) {
+                .onChange(of: token) {
                     if let token {
                         authorization = .oauth(user: username, token: token)
                     } else {

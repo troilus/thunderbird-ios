@@ -44,7 +44,7 @@ struct ManualServerSetup: View {
             if loginDetails.serverProtocol == .jmap {
                 Section(header: Text("account_server_edit_configuration")) {
 
-                    TextEntryWrapper("account_server_settings_server_label", "server.example.com", $incomingHostname)
+                    TextEntryWrapper(NSLocalizedString("account_server_settings_server_label", comment: ""), "server.example.com", $incomingHostname)
                     NumEntryWrapper("account_server_settings_port_label", "443", $incomingPort)
                     Picker("account_server_settings_authentication_label", selection: $incomingServer.authenticationType) {
                         ForEach(AuthenticationType.allCases) { authentication in
@@ -68,15 +68,15 @@ struct ManualServerSetup: View {
             } else {
                 Section(header: Text("account_incoming_server_label")) {
 
-                    TextEntryWrapper("account_server_settings_server_label", "server.example.com", $incomingHostname)
-                    NumEntryWrapper("account_server_settings_port_label", "443", $incomingPort)
+                    TextEntryWrapper(NSLocalizedString("account_server_settings_server_label", comment: ""), "server.example.com", $incomingHostname)
+                    NumEntryWrapper(NSLocalizedString("account_server_settings_port_label", comment: ""), "443", $incomingPort)
                     Picker("Authentication Type", selection: $incomingServer.authenticationType) {
                         ForEach(AuthenticationType.allCases) { authentication in
                             Text(authentication.text)
                                 .tag(authentication)
                         }
                     }
-                    .onChange(of: incomingServer.authenticationType, initial: true) {
+                    .onChange(of: incomingServer.authenticationType) {
 
                     }
                     AuthorizationView(
@@ -91,8 +91,9 @@ struct ManualServerSetup: View {
 
                 }
                 Section(header: Text("account_outgoing_server_label")) {
-                    TextEntryWrapper("account_server_settings_server_label", "server.example.com", $outGoingHostname)
-                    NumEntryWrapper("account_server_settings_port_label", "443", $outGoingPort)
+                    TextEntryWrapper(NSLocalizedString("account_server_settings_server_label", comment: ""), "server.example.com", $outGoingHostname)
+                    NumEntryWrapper(NSLocalizedString("account_server_settings_port_label", comment: ""), "443", $outGoingPort)
+
 
                     Picker("account_server_settings_authentication_label", selection: $outgoingServer.authenticationType) {
                         ForEach(AuthenticationType.allCases) { authentication in
@@ -100,7 +101,7 @@ struct ManualServerSetup: View {
                                 .tag(authentication)
                         }
                     }
-                    .onChange(of: incomingServer.authenticationType, initial: true) {
+                    .onChange(of: incomingServer.authenticationType) {
 
                     }
                     AuthorizationView(

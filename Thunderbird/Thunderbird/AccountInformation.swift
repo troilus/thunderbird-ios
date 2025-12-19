@@ -34,7 +34,7 @@ struct AccountInformation: View {
 
     var body: some View {
         Form {
-            TextEntryWrapper("account_server_settings_email_address_label", "your.email@example.com", $emailAddress)
+            TextEntryWrapper(NSLocalizedString("account_server_settings_email_address_label", comment: ""), "your.email@example.com", $emailAddress)
                 #if os(iOS)
             .keyboardType(.emailAddress)
             .submitLabel(.search)
@@ -93,10 +93,13 @@ struct AccountInformation: View {
                     .buttonStyle(.plain)
             }
         }
-        .onChange(of: emailAddress, initial: true) {
+        .onChange(of: emailAddress) {
             refreshAccount()
         }
-        .onChange(of: config, initial: true) {
+        .onChange(of: config) {
+            refreshAccount()
+        }
+        .onAppear {
             refreshAccount()
         }
         .scrollContentBackground(.hidden)

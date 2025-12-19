@@ -8,15 +8,15 @@ import SwiftUI
 
 struct TextEntryWrapper: View {
     init(
-        _ header: LocalizedStringResource = "",
-        _ suggestion: String = "",
-        _ entryText: Binding<String> = .constant(""),
+    _ header: String = "",
+    _ suggestion: String = "",
+    _ entryText: Binding<String> = .constant(""),
     ) {
-        headerText = header
-        suggestionText = suggestion
-        _entryText = entryText
+    headerText = header
+    suggestionText = suggestion
+    _entryText = entryText
     }
-    private var headerText: LocalizedStringResource
+    private var headerText: String
     private var suggestionText: String
     @Binding private var entryText: String
 

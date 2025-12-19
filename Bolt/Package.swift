@@ -6,7 +6,7 @@ let package: Package = Package(
     name: "Bolt",
     platforms: [
         .macOS(.v15),
-        .iOS(.v18),
+        .iOS(.v16),
         .watchOS(.v11)
     ],
     products: [

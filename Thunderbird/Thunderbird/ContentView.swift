@@ -25,7 +25,7 @@ struct ContentView: View {
             }
 
         }
-        .onChange(of: accounts.allAccounts, initial: true) {
+        .onChange(of: accounts.allAccounts) {
             guard !accounts.allAccounts.isEmpty else {
                 hasAuthorization = false
                 return
@@ -36,6 +36,17 @@ struct ContentView: View {
                 && accounts
                     .allAccounts[0].outgoingServer?.authorization != nil
             isPresented = false
+        }
+        .onAppear {
+            guard !accounts.allAccounts.isEmpty else {
+                hasAuthorization = false
+                return
+            }
+            hasAuthorization =
+                accounts
+                .allAccounts[0].incomingServer?.authorization != nil
+                && accounts
+                    .allAccounts[0].outgoingServer?.authorization != nil
         }
     }
 }

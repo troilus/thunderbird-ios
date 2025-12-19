@@ -8,15 +8,15 @@ import SwiftUI
 
 struct NumEntryWrapper: View {
     init(
-        _ header: LocalizedStringResource,
-        _ suggestion: String,
-        _ entryText: Binding<Int?>,
+    _ header: String,
+    _ suggestion: String,
+    _ entryText: Binding<Int?>,
     ) {
-        headerText = header
-        suggestionText = suggestion
-        _entryText = entryText
+    headerText = header
+    suggestionText = suggestion
+    _entryText = entryText
     }
-    private var headerText: LocalizedStringResource
+    private var headerText: String
     private var suggestionText: String
     @Binding private var entryText: Int?
 

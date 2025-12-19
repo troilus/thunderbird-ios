@@ -14,7 +14,8 @@ public enum Flag: String {
 }
 
 @MainActor
-@Observable final public class FeatureFlags: Sendable {
+@ObservableObject final public class FeatureFlags: ObservableObject, Sendable
+ {
     public var featureList: [String] = ["featureX", "featureY"]
     //False = feature is turned off
     private var featureSettings: [String: Bool] = [:]
